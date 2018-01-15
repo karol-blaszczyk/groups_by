@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'test.rb'
+
 RSpec.describe RGrouper do
   subject { RGrouper.new }
 
@@ -22,6 +24,15 @@ RSpec.describe RGrouper do
       ]
     end
 
+    let(:summarizer) do
+      lambda do |metrics|
+        {
+          cost: metrics.map { |m| m[:cost].to_f }.reduce(&:+).round(2),
+          views: metrics.map { |m| m[:views].to_f }.reduce(&:+)
+        }
+      end
+    end
+
     let(:groupers) do
       [
         :objective, # objectives as Symbol
@@ -31,7 +42,23 @@ RSpec.describe RGrouper do
     end
 
     it 'works' do
-      subject.pritify subject.group(source, *groupers)
+      result = RGrouper.new.rgroup_by(DATA,
+                                      groupings: %i[age_range age_range_state ad_group_state is_negative])
+
+      RGrouper.pritify result
+
+      result = RGrouper.new.rgroup_by(DATA,
+                                      groupings: %i[age_range age_range_state ad_group_state is_negative])
+      puts "****************************************"
+      result = RGrouper.new.rgroup_by(source,
+                                      groupings: groupers,
+                                      summarizer: summarizer
+                                    )
+      RGrouper.pritify result
+
+      # subject.pritify subject.group(DATA, :age_range, :age_range_state, :ad_group_state, :is_negative)
+
+      # subject.pritify subject.group(source, *groupers, summarizer: summarizer)
       # expect(subject.group(source, *groupers))
       #   .to eq([])
     end
