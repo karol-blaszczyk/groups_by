@@ -41,6 +41,43 @@ RSpec.describe RGrouper do
       ] # name Proc wth Regexp
     end
 
+    let(:grouped_result) do
+      {"itaque"=>
+        {"aperiam"=>
+          {"T006049A"=>{:values=>[{:cost=>10, :views=>1, :objective=>"itaque", :creative=>"aperiam", :name=>"T006049A "}]},
+           "F123456A"=>{:values=>[{:cost=>10, :views=>1, :objective=>"itaque", :creative=>"aperiam", :name=>"F123456A "}]},
+           "undefined"=>{:values=>[{:cost=>10, :views=>1, :objective=>"itaque", :creative=>"aperiam", :name=>"D123456A "}]},
+           "BR123456A"=>{:values=>[{:cost=>10, :views=>1, :objective=>"itaque", :creative=>"aperiam", :name=>"BR123456A "}]},
+           :totals=>{:cost=>40.0, :views=>4.0}},
+         "occaecati"=>
+          {"F123456A"=>
+            {:values=>
+              [{:cost=>10, :views=>1, :objective=>"itaque", :creative=>"occaecati", :name=>"F123456A "},
+               {:cost=>10, :views=>1, :objective=>"itaque", :creative=>"occaecati", :name=>"F123456A "},
+               {:cost=>10, :views=>1, :objective=>"itaque", :creative=>"occaecati", :name=>"F123456A "},
+               {:cost=>10, :views=>1, :objective=>"itaque", :creative=>"occaecati", :name=>"F123456A "}],
+             :totals=>{:cost=>40.0, :views=>4.0}},
+           "I123456A"=>{:values=>[{:cost=>10, :views=>1, :objective=>"itaque", :creative=>"occaecati", :name=>"I123456A "}]},
+           :totals=>{:cost=>50.0, :views=>5.0}},
+         :totals=>{:cost=>90.0, :views=>9.0}},
+       "excepturi"=>
+        {"occaecati"=>
+          {"F123456A"=>
+            {:values=>
+              [{:cost=>10, :views=>1, :objective=>"excepturi", :creative=>"occaecati", :name=>"F123456A "},
+               {:cost=>10, :views=>1, :objective=>"excepturi", :creative=>"occaecati", :name=>"F123456A "}],
+             :totals=>{:cost=>20.0, :views=>2.0}},
+           :totals=>{:cost=>20.0, :views=>2.0}},
+         "aperiam"=>
+          {"F123456A"=>
+            {:values=>
+              [{:cost=>10, :views=>1, :objective=>"excepturi", :creative=>"aperiam", :name=>"F123456A "},
+               {:cost=>10, :views=>1, :objective=>"excepturi", :creative=>"aperiam", :name=>"F123456A "}],
+             :totals=>{:cost=>20.0, :views=>2.0}},
+           :totals=>{:cost=>20.0, :views=>2.0}},
+         :totals=>{:cost=>40.0, :views=>4.0}},
+       :totals=>{:cost=>130.0, :views=>13.0}}
+    end
     it 'works' do
       result = RGrouper.new.rgroup_by(DATA,
                                       groupings: %i[age_range age_range_state ad_group_state is_negative])
@@ -55,6 +92,8 @@ RSpec.describe RGrouper do
                                       summarizer: summarizer
                                     )
       RGrouper.pritify result
+
+      expect(result).to eq(grouped_result)
 
       # subject.pritify subject.group(DATA, :age_range, :age_range_state, :ad_group_state, :is_negative)
 

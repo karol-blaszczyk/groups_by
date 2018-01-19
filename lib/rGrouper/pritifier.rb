@@ -22,7 +22,7 @@ module Pritifier
   private
 
   def metrics_table_headers(keys, cell_size)
-    keys.map { |key| key.to_s.upcase + ' ' * (cell_size - key.to_s.length) }
+    keys.map { |key| key.to_s + ' ' * (cell_size - key.to_s.length) }
   end
 
   # Metrics table, or totals table, with values
