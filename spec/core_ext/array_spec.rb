@@ -4,10 +4,10 @@ require 'groups_by/core_ext/array'
 RSpec.describe Array do
   subject do
     [
-      { name: '--2222--', age: '18-24', gender: 'Male', views: 1 },
-      { name: '--1111--', age: '18-24', gender: 'Female', views: 2 },
-      { name: '--2222--', age: '25-34', gender: 'Female', views: 1 },
-      { name: '--1111--', age: '25-34', gender: 'Male', views: 1 }
+      { name: '--2222--', age: '18-24', gender: 'Male', spend: 1 },
+      { name: '--1111--', age: '18-24', gender: 'Female', spend: 2 },
+      { name: '--2222--', age: '25-34', gender: 'Female', spend: 1 },
+      { name: '--1111--', age: '25-34', gender: 'Male', spend: 1 }
     ]
   end
 
@@ -16,19 +16,19 @@ RSpec.describe Array do
       '18-24' =>
         {
           'Male' => {
-            '2222' => [{ name: '--2222--', age: '18-24', gender: 'Male', views: 1 }]
+            '2222' => [{ name: '--2222--', age: '18-24', gender: 'Male', spend: 1 }]
           },
           'Female' => {
-            '1111' => [{ name: '--1111--', age: '18-24', gender: 'Female', views: 2 }]
+            '1111' => [{ name: '--1111--', age: '18-24', gender: 'Female', spend: 2 }]
           }
         },
       '25-34' =>
         {
           'Female' => {
-            '2222' => [{ name: '--2222--', age: '25-34', gender: 'Female', views: 1 }]
+            '2222' => [{ name: '--2222--', age: '25-34', gender: 'Female', spend: 1 }]
           },
           'Male' => {
-            '1111' => [{ name: '--1111--', age: '25-34', gender: 'Male', views: 1 }]
+            '1111' => [{ name: '--1111--', age: '25-34', gender: 'Male', spend: 1 }]
           }
         }
     }

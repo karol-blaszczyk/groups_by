@@ -28,7 +28,7 @@ There are several ways of using groups_by.
 
       GroupsBy.new.groups_by(
               <ARRAY_OF_HASHES>,
-              groupings: <GROUPING_RULES>)
+              group_by_rules: <GROUPING_RULES>)
       # => grouping result
   ```
 ### CoreExt

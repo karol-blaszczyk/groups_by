@@ -1,93 +1,124 @@
 require 'spec_helper'
 
-require 'test.rb'
-
 RSpec.describe GroupsBy do
   subject { GroupsBy.new }
 
   describe '#group' do
     let(:source) do
       [
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'aperiam', name: 'T006049A ' },
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'aperiam', name: 'F123456A ' },
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'aperiam', name: 'D123456A ' },
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'aperiam', name: 'BR123456A ' },
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'occaecati', name: 'F123456A ' },
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'occaecati', name: 'F123456A ' },
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'occaecati', name: 'I123456A ' },
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'occaecati', name: 'F123456A ' },
-        { cost: 10, views: 1, objective: 'itaque',  creative: 'occaecati', name: 'F123456A ' },
-        { cost: 10, views: 1, objective: 'excepturi', creative: 'occaecati', name: 'F123456A ' },
-        { cost: 10, views: 1, objective: 'excepturi', creative: 'occaecati', name: 'F123456A ' },
-        { cost: 10, views: 1, objective: 'excepturi', creative: 'aperiam', name: 'F123456A ' },
-        { cost: 10, views: 1, objective: 'excepturi', creative: 'aperiam', name: 'F123456A ' }
+        { v1: 10, v2: 1, name: 'ni',  sub: 'ap', id: '-1-' },
+        { v1: 10, v2: 1, name: 'ni',  sub: 'ap', id: '-3-' },
+        { v1: 10, v2: 1, name: 'na', sub: 'ap', id: '-3-' }
       ]
     end
 
     let(:summarizer) do
       lambda do |metrics|
         {
-          cost: metrics.map { |m| m[:cost].to_f }.reduce(&:+).round(2),
-          views: metrics.map { |m| m[:views].to_f }.reduce(&:+)
+          v1: metrics.map { |m| m[:v1].to_f }.reduce(&:+).round(2),
+          v2: metrics.map { |m| m[:v2].to_f }.reduce(&:+)
         }
       end
     end
 
     let(:groupers) do
       [
-        :objective, # objectives as Symbol
-        :creative, # creatives as Symbol
-        ->(el) { el[:name][/(?:T|A|F|I|BR)\d{6}[A-Z]?(?=\ )/] }
-      ] # name Proc wth Regexp
+        :name, # names as Symbol
+        :sub, # sub as Symbol
+        ->(el) { el[:id][/\d+/
+          ] } # id Proc wth Regexp
+      ]
     end
 
-    let(:grouped_result) do
-      { 'itaque' =>
-        { 'aperiam' =>
-          { 'T006049A' => { values: [{ cost: 10, views: 1, objective: 'itaque', creative: 'aperiam', name: 'T006049A ' }] },
-            'F123456A' => { values: [{ cost: 10, views: 1, objective: 'itaque', creative: 'aperiam', name: 'F123456A ' }] },
-            'undefined' => { values: [{ cost: 10, views: 1, objective: 'itaque', creative: 'aperiam', name: 'D123456A ' }] },
-            'BR123456A' => { values: [{ cost: 10, views: 1, objective: 'itaque', creative: 'aperiam', name: 'BR123456A ' }] },
-            :totals => { cost: 40.0, views: 4.0 } },
-          'occaecati' =>
-          { 'F123456A' =>
-            { values:               [{ cost: 10, views: 1, objective: 'itaque', creative: 'occaecati', name: 'F123456A ' },
-                                     { cost: 10, views: 1, objective: 'itaque', creative: 'occaecati', name: 'F123456A ' },
-                                     { cost: 10, views: 1, objective: 'itaque', creative: 'occaecati', name: 'F123456A ' },
-                                     { cost: 10, views: 1, objective: 'itaque', creative: 'occaecati', name: 'F123456A ' }],
-              totals: { cost: 40.0, views: 4.0 } },
-            'I123456A' => { values: [{ cost: 10, views: 1, objective: 'itaque', creative: 'occaecati', name: 'I123456A ' }] },
-            :totals => { cost: 50.0, views: 5.0 } },
-          :totals => { cost: 90.0, views: 9.0 } },
-        'excepturi' =>
-        { 'occaecati' =>
-          { 'F123456A' =>
-            { values:               [{ cost: 10, views: 1, objective: 'excepturi', creative: 'occaecati', name: 'F123456A ' },
-                                     { cost: 10, views: 1, objective: 'excepturi', creative: 'occaecati', name: 'F123456A ' }],
-              totals: { cost: 20.0, views: 2.0 } },
-            :totals => { cost: 20.0, views: 2.0 } },
-          'aperiam' =>
-          { 'F123456A' =>
-            { values:               [{ cost: 10, views: 1, objective: 'excepturi', creative: 'aperiam', name: 'F123456A ' },
-                                     { cost: 10, views: 1, objective: 'excepturi', creative: 'aperiam', name: 'F123456A ' }],
-              totals: { cost: 20.0, views: 2.0 } },
-            :totals => { cost: 20.0, views: 2.0 } },
-          :totals => { cost: 40.0, views: 4.0 } },
-        :totals => { cost: 130.0, views: 13.0 } }
+    shared_context 'groups and pritifies' do
+      after do
+        GroupsBy.pritify result
+      end
+
+      let(:grouped) do
+        GroupsBy.new.groups_by(source,
+                               group_by_rules: groupers,
+                               summarizer: summarizer)
+      end
+
+      it 'groups correctly' do
+        expect(grouped).to eq(result)
+      end
     end
 
-    it 'woks with summarizer' do
-      result = GroupsBy.new.groups_by(source,
-                                      groupings: groupers,
-                                      summarizer: summarizer)
-      GroupsBy.pritify result
-      expect(result).to eq(grouped_result)
+    context 'with summary' do
+      let(:result) do
+        {
+          'ni' => {
+            'ap' => {
+              '1' => { values:
+                [{ v1: 10, v2: 1, name: 'ni', sub: 'ap', id: '-1-' }
+                  ] },
+              '3' => { values:
+                [{ v1: 10, v2: 1, name: 'ni', sub: 'ap', id: '-3-' }
+                  ] },
+              :totals => { v1: 20.0, v2: 2.0 }
+            },
+            :totals => { v1: 20.0, v2: 2.0 }
+          },
+          'na' => {
+            'ap' => {
+              '3' => { values:
+                [{ v1: 10, v2: 1, name: 'na', sub: 'ap', id: '-3-' }
+                  ] },
+              :totals => { v1: 10.0, v2: 1.0 }
+            },
+            :totals => { v1: 10.0, v2: 1.0 }
+          },
+          :totals => { v1: 30.0, v2: 3.0 }
+        }
+      end
+      it_behaves_like 'groups and pritifies'
     end
 
-    it 'works without summarizer' do
-      result = GroupsBy.new.groups_by(DATA,
-                                      groupings: %i[age_range age_range_state ad_group_state is_negative])
-      GroupsBy.pritify result
+    context 'without summary' do
+      let(:summarizer) { nil }
+      let(:result) do
+        {
+          'ni' => {
+            'ap' => {
+              '1' => [{ v1: 10, v2: 1, name: 'ni', sub: 'ap', id: '-1-' }],
+              '3' => [{ v1: 10, v2: 1, name: 'ni', sub: 'ap', id: '-3-' }]
+            }
+          },
+          'na' => {
+            'ap' => {
+              '3' => [{ v1: 10, v2: 1, name: 'na', sub: 'ap', id: '-3-' }]
+            }
+          }
+        }
+      end
+      it_behaves_like 'groups and pritifies'
+    end
+
+    context 'invalid grouping' do
+      let(:groupers) { [:name, ->(el) { el[:a
+        ] }
+        ] }
+      let(:result) do
+        {
+          'ni' => {
+            '_unknown_group_' => { values:
+              [{ v1: 10, v2: 1, name: 'ni', sub: 'ap', id: '-1-' },
+                { v1: 10, v2: 1, name: 'ni', sub: 'ap', id: '-3-' }],
+                totals: { v1: 20.0, v2: 2.0 } },
+            :totals => { v1: 20.0, v2: 2.0 }
+          },
+          'na' => {
+            '_unknown_group_' => { values:
+              [{ v1: 10, v2: 1, name: 'na', sub: 'ap', id: '-3-' }
+                ] },
+            :totals => { v1: 10.0, v2: 1.0 }
+          },
+          :totals => { v1: 30.0, v2: 3.0 }
+        }
+      end
+      it_behaves_like 'groups and pritifies'
     end
   end
 end

@@ -17,14 +17,14 @@ class GroupsBy
 
   # GroupsBy.new.groups_by(
   #   source: DATA,
-  #   groupings: [:age_range, :age_range_state, :ad_group_state, :is_negative],
+  #   group_by_rules: [:age_range, :age_range_state, :ad_group_state, :is_negative],
   #   summarizer: nil
   # )
-  attr_accessor :source_arr, :groupings, :summarizer
-  def groups_by(source_arr, groupings: [], summarizer: nil)
+  attr_accessor :source_arr, :group_by_rules, :summarizer
+  def groups_by(source_arr, group_by_rules: [], summarizer: nil)
     @source_arr = source_arr
-    @groupings = groupings
+    @group_by_rules = group_by_rules
     @summarizer = summarizer
-    group(source_arr, groupings)
+    group(source_arr, group_by_rules)
   end
 end
