@@ -75,27 +75,19 @@ RSpec.describe GroupsBy do
           :totals => { cost: 40.0, views: 4.0 } },
         :totals => { cost: 130.0, views: 13.0 } }
     end
-    it 'works' do
-      result = GroupsBy.new.groups_by(DATA,
-                                      groupings: %i[age_range age_range_state ad_group_state is_negative])
 
-      GroupsBy.pritify result
-
-      result = GroupsBy.new.groups_by(DATA,
-                                      groupings: %i[age_range age_range_state ad_group_state is_negative])
-      puts '****************************************'
+    it 'woks with summarizer' do
       result = GroupsBy.new.groups_by(source,
                                       groupings: groupers,
                                       summarizer: summarizer)
       GroupsBy.pritify result
-
       expect(result).to eq(grouped_result)
+    end
 
-      # subject.pritify subject.group(DATA, :age_range, :age_range_state, :ad_group_state, :is_negative)
-
-      # subject.pritify subject.group(source, *groupers, summarizer: summarizer)
-      # expect(subject.group(source, *groupers))
-      #   .to eq([])
+    it 'works without summarizer' do
+      result = GroupsBy.new.groups_by(DATA,
+                                      groupings: %i[age_range age_range_state ad_group_state is_negative])
+      GroupsBy.pritify result
     end
   end
 end
