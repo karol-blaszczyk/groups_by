@@ -1,17 +1,17 @@
 
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'rGrouper/version'
+require 'groups_by/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'rGrouper'
-  spec.version       = RGrouper::VERSION
+  spec.name          = 'groups_by'
+  spec.version       = GroupsBy::VERSION
   spec.authors       = ['Karol Błaszczyk']
   spec.email         = ['karol.zygmunt.blaszczyk@gmail.com']
 
-  spec.summary       = 'rGrouper'
+  spec.summary       = 'groups_by'
   # spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = 'https://github.com/karol-blaszczyk/rGrouper'
+  spec.homepage      = 'https://github.com/karol-blaszczyk/groups_by'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

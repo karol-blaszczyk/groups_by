@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'rGrouper'
+require 'groups_by'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

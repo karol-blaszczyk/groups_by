@@ -3,9 +3,9 @@ module CoreGrouper
 
   # @param source [Array<Hash>]
   def group(source, groupings)
-    groups = source.group_by { |el| group_proc(groupings.first).(el) || UNDEFINED_GROUP_NAME }
-    groups.merge!(totals: summarizer.(groups.values.flatten)) if summarizer
-    groups.merge(groups.reject{|k, v| k == :totals }) do |_group, elements|
+    groups = source.group_by { |el| group_proc(groupings.first).call(el) || UNDEFINED_GROUP_NAME }
+    groups[:totals] = summarizer.call(groups.values.flatten) if summarizer
+    groups.merge(groups.reject { |k, _v| k == :totals }) do |_group, elements|
       group_merger(elements, groupings)
     end
   end
@@ -14,9 +14,13 @@ module CoreGrouper
 
   def group_merger(elements, groupings)
     if groupings.count == 1
-      { values: elements }.tap do |hsh|
-        # totals only if more than 1 element
-        hsh.merge!(totals: summarizer.(elements)) if elements.count > 1 && summarizer
+      if summarizer
+        { values: elements }.tap do |hsh|
+          # totals only if more than 1 element
+          hsh.merge!(totals: summarizer.call(elements)) if elements.count > 1
+        end
+      else
+        elements
       end
     else
       group(elements, groupings.drop(1))

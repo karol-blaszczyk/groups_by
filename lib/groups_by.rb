@@ -1,27 +1,27 @@
 %w[
-  rGrouper/version
+  groups_by/version
   colorize
-  rGrouper/pritifier
-  rGrouper/core_grouper
+  groups_by/pritifier
+  groups_by/core_grouper
   pry
 ].each do |lib|
   require lib
 end
 
-class RGrouper
+class GroupsBy
   include CoreGrouper
 
   class << self
     include Pritifier
   end
 
-  # RGrouper.new.rgroup_by(
+  # GroupsBy.new.groups_by(
   #   source: DATA,
   #   groupings: [:age_range, :age_range_state, :ad_group_state, :is_negative],
   #   summarizer: nil
   # )
   attr_accessor :source_arr, :groupings, :summarizer
-  def rgroup_by(source_arr, groupings: [], summarizer: nil)
+  def groups_by(source_arr, groupings: [], summarizer: nil)
     @source_arr = source_arr
     @groupings = groupings
     @summarizer = summarizer

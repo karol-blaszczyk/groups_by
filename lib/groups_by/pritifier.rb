@@ -2,11 +2,12 @@ module Pritifier
   require 'colorize'
   INDENT = "\t".freeze
 
-  # @param arr [Array<Hash>] initialy source_arr
+  # @param table [Hash, Array] initialy source_arr
   # @param indent [Integer]
-  def pritify(arr, indent = 0)
+  def pritify(table, indent = 0)
     indent += 1
-    arr.each do |k, v|
+    return pritty_table(table, indent, 'blue') if table.is_a?(Array)
+    table.each do |k, v|
       # indent = 0 unless i == 0
       if k == :values
         pritty_table(v, indent, 'green')
