@@ -25,8 +25,7 @@ RSpec.describe GroupsBy do
       [
         :name, # names as Symbol
         :sub, # sub as Symbol
-        ->(el) { el[:id][/\d+/
-          ] } # id Proc wth Regexp
+        ->(el) { el[:id][/\d+/] } # Proc wth Regexp
       ]
     end
 
