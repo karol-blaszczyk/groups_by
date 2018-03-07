@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['karol.zygmunt.blaszczyk@gmail.com']
 
   spec.summary       = 'groups_by'
-  # spec.description   = %q{TODO: Write a longer description or delete this line.}
+  spec.description   = '#group_by with multiple grouping rules.'
   spec.homepage      = 'https://github.com/karol-blaszczyk/groups_by'
   spec.license       = 'MIT'
 
